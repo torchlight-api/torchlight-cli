@@ -1,0 +1,29 @@
+{
+    "name": "@torchlight-api/torchlight-cli",
+    "version": "0.0.1",
+    "description": "A CLI for Torchlight - the syntax highlighting API",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "bin": {
+        "torchlight": "index.js"
+    },
+    "keywords": [
+        "syntax",
+        "highlighting",
+        "torchlight"
+    ],
+    "author": "Aaron Francis <aaron@hammerstone.dev> (https://torchlight.dev)",
+    "license": "MIT",
+    "dependencies": {
+        "axios": "^0.21.1",
+        "chalk": "^4.1.2",
+        "cheerio": "^1.0.0-rc.10",
+        "chokidar": "^3.5.2",
+        "commander": "^8.1.0",
+        "fs-extra": "^10.0.0",
+        "inquirer": "^8.1.2",
+        "md5": "^2.3.0"
+    }
+}
