@@ -154,7 +154,7 @@ function highlight(torchlight, source) {
  * @return {string}
  */
 function decipherLanguage($pre) {
-    let custom = torchlight.config('decipherLanguageFromElement')
+    let custom = torchlight.config('highlight.decipherLanguageFromElement')
 
     // Let the developer add their own deciphering mechanism.
     if (custom) {
