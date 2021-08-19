@@ -4,8 +4,10 @@ module.exports = {
 
     // The Torchlight client caches highlighted code blocks. Here you
     // can define which directory you'd like to use. You'll likely
-    // want to add this directory to your .gitignore.
-    cacheDirectory: 'cache',
+    // want to add this directory to your .gitignore. Set to
+    // `false` to use an in-memory cache. You may also
+    // provide a full cache implementation.
+    cache: 'cache',
 
     // Which theme you want to use. You can find all of the themes at
     // https://torchlight.dev/docs/themes.
@@ -35,7 +37,8 @@ module.exports = {
         // summaryCollapsedIndicator: '...',
     },
 
-    files: {
+    // Options for the highlight command.
+    highlight: {
         // Directory where your un-highlighted source files live. If
         // left blank, Torchlight will use the current directory.
         input: '',

@@ -72,15 +72,17 @@ Torchlight.prototype.normalizeConfiguration = function (config) {
  * @return {Cache}
  */
 Torchlight.prototype.makeCache = function () {
+    let cache = this.config('cache', false);
+
     // Make a file cache if we're given a directory.
-    if (this.config('cacheDirectory')) {
+    if (cache && typeof cache === 'string') {
         return new FileCache({
-            directory: this.config('cacheDirectory')
+            directory: cache
         });
     }
 
     // Use the cache they have provided, or default to an in-memory cache.
-    return this.config('cache') ? this.config('cache') : new MemoryCache();
+    return cache ? cache : new MemoryCache();
 }
 
 /**

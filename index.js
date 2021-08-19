@@ -3,7 +3,6 @@ const {program} = require('commander')
 const torchlight = require('./src/torchlight');
 
 command('_default_')
-    .alias('highlight')
     .description('Highlight code blocks in source files')
     .option('-i, --input <directory>', 'Input directory. Defaults to current directory.')
     .option('-o, --output <directory>', 'Output directory. Defaults to current directory.')

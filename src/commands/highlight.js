@@ -8,10 +8,10 @@ const log = require('../support/log')
 
 module.exports = function (torchlight, options) {
     options = {
-        input: torchlight.config('files.input', ''),
-        output: torchlight.config('files.output', ''),
-        include: torchlight.config('files.includeGlobs', ['**/*.htm', '**/*.html']),
-        exclude: torchlight.config('files.excludePatterns', ['/node_modules/', '/vendor/']),
+        input: torchlight.config('highlight.input', ''),
+        output: torchlight.config('highlight.output', ''),
+        include: torchlight.config('highlight.includeGlobs', ['**/*.htm', '**/*.html']),
+        exclude: torchlight.config('highlight.excludePatterns', ['/node_modules/', '/vendor/']),
         watch: false,
         ...options
     }
