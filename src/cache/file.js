@@ -13,6 +13,10 @@ const {
  * @constructor
  */
 let File = function (options = {}) {
+    if (!options.directory) {
+        throw new Error('No cache directory specified.');
+    }
+
     this.directory = path.resolve(options.directory)
 
     ensureDirSync(this.directory);
