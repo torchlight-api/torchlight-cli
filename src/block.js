@@ -1,5 +1,5 @@
 const md5 = require('md5');
-const guid = require('./guid');
+const guid = require('./support/guid');
 const torchlight = require('./torchlight');
 
 let Block = function (opts = {}) {

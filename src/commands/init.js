@@ -1,11 +1,15 @@
-const {writeFileSync, existsSync, readFileSync} = require('fs-extra')
+const {writeFileSync, existsSync, readFileSync, ensureFileSync} = require('fs-extra')
 const path = require('path');
 const inquirer = require('inquirer');
+const log = require('../support/log');
 
 function write(location) {
-    let stub = readFileSync(path.resolve('src/stubs/config.js'), 'utf-8');
+    let source = path.resolve(path.join(__dirname, '../stubs/config.js'));
+    let stub = readFileSync(source, 'utf-8');
+
+    ensureFileSync(location);
     writeFileSync(location, stub);
-    console.log('File written to %s', location);
+    log.info('File written to %s', location);
 }
 
 module.exports = function (torchlight, options) {

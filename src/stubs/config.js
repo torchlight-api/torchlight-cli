@@ -33,5 +33,29 @@ module.exports = {
         // When lines are collapsed, this is the text that will
         // be shown to indicate that they can be expanded.
         // summaryCollapsedIndicator: '...',
+    },
+
+    files: {
+        // Directory where your un-highlighted source files live. If
+        // left blank, Torchlight will use the current directory.
+        input: '',
+
+        // Directory where your highlighted files should be placed. If
+        // left blank, files will be modified in place.
+        output: '',
+
+        // Globs to include when looking for files to highlight.
+        includeGlobs: [
+            '**/*.htm',
+            '**/*.html'
+        ],
+
+        // String patterns to ignore (not globs). The entire file
+        // path will be searched and if any of these strings
+        // appear, the file will be ignored.
+        excludePatterns: [
+            '/node_modules/',
+            '/vendor/'
+        ]
     }
 }

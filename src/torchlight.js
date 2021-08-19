@@ -4,6 +4,8 @@ const MemoryCache = require('./cache/memory');
 const {readJsonSync, pathExistsSync} = require('fs-extra')
 const path = require('path');
 const md5 = require('md5');
+const get = require('lodash.get');
+const log = require('./support/log');
 
 const VERSION = readJsonSync(path.resolve('package.json')).version;
 
@@ -14,6 +16,10 @@ let Torchlight = function () {
     //
 }
 
+/**
+ * @param config
+ * @return {Torchlight}
+ */
 Torchlight.prototype.init = function (config) {
     this.configuration = this.normalizeConfiguration(config);
     this.cache = this.makeCache();
@@ -29,7 +35,7 @@ Torchlight.prototype.init = function (config) {
  * @return {*}
  */
 Torchlight.prototype.config = function (key, def = undefined) {
-    return this.configuration.hasOwnProperty(key) ? this.configuration[key] : def;
+    return get(this.configuration, key, def);
 }
 
 /**
@@ -88,7 +94,7 @@ Torchlight.prototype.highlight = function (blocks) {
 
     return this.request(needed).then(response => {
         needed.forEach(block => {
-            let found = response.data.blocks.find(b => block.id === b.id);
+            let found = response?.data?.blocks?.find(b => block.id === b.id);
 
             if (!found) {
                 return;
@@ -103,6 +109,16 @@ Torchlight.prototype.highlight = function (blocks) {
             block.setResponseData(found);
         })
 
+        blocks.filter(block => !block.highlighted)
+            .forEach(block => {
+                if (response !== 403) {
+                    log.error('A block failed to highlight. Ensure "%s" is a valid language.', block.language);
+                }
+
+                block.highlighted = block.code.split('\n').map(line => `<div class="line">${htmlEntities(line)}</div>`).join('');
+                block.classes = 'torchlight';
+            })
+
         return blocks;
     });
 }
@@ -112,16 +128,30 @@ Torchlight.prototype.request = function (blocks) {
         return Promise.resolve([])
     }
 
-    // @TODO Catch rejection
+    let token = this.config('token');
+
+    if (!token) {
+        log.error(`No Torchlight token configured!`);
+        return Promise.resolve(403);
+    }
+
     return axios.post('https://api.torchlight.dev/highlight', {
         blocks: blocks.map(block => block.toRequestParams()),
         options: this.config('options', {})
     }, {
         headers: {
-            'Authorization': `Bearer ` + this.config('token'),
+            'Authorization': `Bearer ${token}`,
             'X-Torchlight-Client': `Torchlight CLI ${VERSION}`
         }
+    }).catch(err => {
+        log.error(err.message);
+
+        return err.response.status;
     })
+}
+
+function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 module.exports = new Torchlight;

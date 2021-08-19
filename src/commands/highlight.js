@@ -4,25 +4,32 @@ const torchlight = require('../torchlight');
 const Block = require('../block');
 const cheerio = require('cheerio').default;
 const chokidar = require('chokidar');
+const log = require('../support/log')
 
 module.exports = function (torchlight, options) {
     options = {
-        input: '',
-        output: '',
-        globs: '**/*.htm,**/*.html',
-        ignore: '',
+        input: torchlight.config('files.input', ''),
+        output: torchlight.config('files.output', ''),
+        include: torchlight.config('files.includeGlobs', ['**/*.htm', '**/*.html']),
+        exclude: torchlight.config('files.excludePatterns', ['/node_modules/', '/vendor/']),
         watch: false,
         ...options
     }
 
+    if (options.watch) {
+        log.info(`
+***************************************
+*   Torchlight is watching files...   *
+***************************************
+        `)
+    }
+
     let input = path.resolve(options.input);
     let output = path.resolve(options.output || options.input);
-    // Always ignore node_modules
-    let ignore = [...options.ignore.split(','), 'node_modules'].filter(path => path);
 
-    let watcher = chokidar.watch(options.globs.split(','), {
+    let watcher = chokidar.watch(normalizeStringedArray(options.include), {
         cwd: input,
-        ignored: path => ignore.some(s => path.includes(s)),
+        ignored: path => normalizeStringedArray(options.exclude).some(s => path.includes(s)),
         ignoreInitial: false
     })
 
@@ -31,15 +38,19 @@ module.exports = function (torchlight, options) {
             return;
         }
 
+        log.info('Highlighting %s', file);
+
         let source = readFileSync(path.join(input, file), 'utf-8');
 
         highlight(torchlight, source).then(highlighted => {
-            if (source === highlighted) {
+            let destination = path.join(output, file);
+
+            ensureFileSync(destination);
+            if (highlighted === readFileSync(destination, 'utf-8')) {
                 return;
             }
 
-            let destination = path.join(output, file);
-            ensureFileSync(destination);
+            log.info('Writing to %s', destination);
             writeFileSync(destination, highlighted, 'utf-8')
         })
     })
@@ -49,6 +60,10 @@ module.exports = function (torchlight, options) {
             watcher.close();
         }
     })
+}
+
+function normalizeStringedArray(value) {
+    return (typeof value === 'string' ? value.split(',') : value).filter(x => x);
 }
 
 function highlight(torchlight, source) {
@@ -91,11 +106,18 @@ function highlight(torchlight, source) {
         // Add a fake style that we can replace later.
         $pre.css(block.placeholder('style'), '0')
 
-        // Store the raw code as the developer wrote it, so we can re-highlight it later if we need to.
-        let raw = `<div data-torchlight-original='true' style='display: none !important;'>${$code.html()}</div>`;
+        // Store the raw code as the developer wrote it, so we can re-highlight
+        // it later if we need to, or allow it to be copied to clipboard.
+        let raw = `<textarea data-torchlight-original='true' style='display: none !important;'>${$code.html()}</textarea>`;
 
         // Add the placeholder inside the code tag.
         $code.html(block.placeholder('highlighted') + raw);
+
+        // Give the developer an opportunity to add things to the placeholder
+        // element. Like copy to clipboard buttons, language indicators, etc.
+        if (torchlight.config('modifyPlaceholderElement')) {
+            torchlight.config('modifyPlaceholderElement')($, $pre, $code, block);
+        }
 
         // Swap out the original tag with the outerHTML of our built up tag.
         highlighted = highlighted.replace(pristinePreElement, $.html($pre));
@@ -110,8 +132,8 @@ function highlight(torchlight, source) {
     return torchlight.highlight(blocks).then(() => {
         blocks.forEach(block => {
             let swap = {
-                [block.placeholder('class')]: block.classes,
-                [block.placeholder('style') + ': 0;']: block.styles,
+                [block.placeholder('class')]: block.classes ?? '',
+                [block.placeholder('style') + ': 0;']: block.styles ?? '',
                 [block.placeholder('highlighted')]: block.highlighted
             }
 
@@ -172,8 +194,8 @@ function decipherFromElement($el) {
 
     return [
         // Data attributes get highest priority.
-        $el.data().language,
-        $el.data().lang,
+        $el.data()?.language,
+        $el.data()?.lang,
         ...classes
     ].filter(l => l);
 }

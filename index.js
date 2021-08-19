@@ -4,16 +4,16 @@ const torchlight = require('./src/torchlight');
 
 command('_default_')
     .alias('highlight')
-    .description('Highlight <code> blocks in source files')
-    .option('-i, --input <directory>', 'Input directory')
-    .option('-o, --output <directory>', 'Output directory')
-    .option('-g, --globs <pattern>', 'Glob patterns used to search for source files. Separate multiple patterns with commas.')
-    .option('-x, --ignore <pattern>', 'Glob patterns used to ignore source files. Separate multiple patterns with commas.')
+    .description('Highlight code blocks in source files')
+    .option('-i, --input <directory>', 'Input directory. Defaults to current directory.')
+    .option('-o, --output <directory>', 'Output directory. Defaults to current directory.')
+    .option('-n, --include <patterns>', 'Glob patterns used to search for source files. Separate multiple patterns with commas. Defaults to "**/*.htm,**/*.html".')
+    .option('-x, --exclude <patterns>', 'String patterns to ignore (not globs). Separate multiple patterns with commas. Defaults to "/node_modules/,/vendor/".')
     .option('-w, --watch', 'Watch source files for changes')
 
 command('init')
     .option('-p, --path <path>', 'Location for the configuration file')
-    .description('Publish the Torchlight configuration file');
+    .description('Publish the Torchlight configuration file.');
 
 command('cache:clear')
     .description('Clear the cache');
