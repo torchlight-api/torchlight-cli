@@ -4,3 +4,4 @@ built
 .idea
 node_modules
 tests/tmp
+package-lock.json
