@@ -55,7 +55,7 @@ fixture('single-block', () => {
 
 fixture('cached: pulls from cache', () => {
     // This is the known hash of the block in the cached.html file.
-    torchlight.cache.set('997f071f9dc474ff226297244eebabf0', {
+    torchlight.cache.set('56cb7c008dcb9a0c1f619c83454e5817', {
         highlighted: 'highlighted',
         classes: 'classes',
         styles: 'styles',

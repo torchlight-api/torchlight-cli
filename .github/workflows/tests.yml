@@ -1,11 +1,15 @@
-name: Test
-on: push
+name: Tests
+on: [ push, pull_request ]
+
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
     steps:
       - uses: actions/checkout@v2
-      - name: Install modules
+
+      - name: Install packages
         run: npm ci
+
       - name: Run tests
         run: npm run test
