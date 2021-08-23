@@ -18,6 +18,13 @@ function fixture (file, callback, options = {}) {
 
   description = `${path} ${dashes} ${description.trim()}`
 
+  // If there was no callback, it's just a snapshot test.
+  callback = callback ?? function () {
+    const mock = mockApi(() => [])
+
+    return () => expect(mock).toHaveBeenCalledTimes(1)
+  }
+
   test(description, done => {
     const after = callback()
 

@@ -10,6 +10,8 @@ beforeEach(() => {
   torchlight.initialized = false
 })
 
+fixture('keygen: fixes zekes issue')
+
 fixture('multiple-blocks: three blocks in one pre tag', () => {
   const mock = mockApi(data => {
     expect(data.blocks).toHaveLength(3)

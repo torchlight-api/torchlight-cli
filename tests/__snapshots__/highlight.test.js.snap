@@ -147,6 +147,23 @@ exports[`decipher-language.html -------- it deciphers languages based on attribu
 <pre data-custom=\\"foobar\\" class=\\"torchlight\\" style=\\"\\" data-torchlight-processed=\\"3449c9e5e332f1dbb81505cd739fbf3f\\"><code><div class=\\"line\\">foobar</div><textarea data-torchlight-original=\\"true\\" style=\\"display: none !important;\\">foobar</textarea></code></pre>"
 `;
 
+exports[`keygen.html ------------------- fixes zekes issue: keygen.html keygen.html ------------------- fixes zekes issue 1`] = `
+"<pre data-lang=\\"csharp\\" class=\\"torchlight\\" style=\\"\\" data-torchlight-processed=\\"3449c9e5e332f1dbb81505cd739fbf3f\\"><code><div class=\\"line\\">using RestSharp;</div><div class=\\"line\\">using System;</div><div class=\\"line\\">using System.Text;</div><div class=\\"line\\"></div><div class=\\"line\\">var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(&quot;{EMAIL}:{PASSWORD}&quot;));</div><div class=\\"line\\"></div><div class=\\"line\\">var client = new RestClient(&quot;https://api.keygen.sh/v1/accounts/{ACCOUNT}&quot;);</div><div class=\\"line\\">var request = new RestRequest(&quot;tokens&quot;, Method.POST);</div><div class=\\"line\\"></div><div class=\\"line\\">request.AddHeader(&quot;Accept&quot;, &quot;application/vnd.api+json&quot;);</div><div class=\\"line\\">request.AddHeader(&quot;Authorization&quot;, $&quot;Basic {credentials}&quot;);</div><div class=\\"line\\"></div><div class=\\"line\\">var response = client.Execute(request);</div><textarea data-torchlight-original=\\"true\\" style=\\"display: none !important;\\">using RestSharp;
+using System;
+using System.Text;
+
+var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(\\"{EMAIL}:{PASSWORD}\\"));
+
+var client = new RestClient(\\"https://api.keygen.sh/v1/accounts/{ACCOUNT}\\");
+var request = new RestRequest(\\"tokens\\", Method.POST);
+
+request.AddHeader(\\"Accept\\", \\"application/vnd.api+json\\");
+request.AddHeader(\\"Authorization\\", $\\"Basic {credentials}\\");
+
+var response = client.Execute(request);</textarea></code></pre>
+"
+`;
+
 exports[`multiple-blocks.html ---------- three blocks in one pre tag: multiple-blocks.html multiple-blocks.html ---------- three blocks in one pre tag 1`] = `
 "<pre class=\\"torchlight torchlight torchlight\\" style=\\"  \\" data-torchlight-processed=\\"3449c9e5e332f1dbb81505cd739fbf3f\\"><code data-lang=\\"php\\"><div class=\\"line\\">php</div><textarea data-torchlight-original=\\"true\\" style=\\"display: none !important;\\">php</textarea></code><code data-lang=\\"html\\"><div class=\\"line\\">html</div><textarea data-torchlight-original=\\"true\\" style=\\"display: none !important;\\">html</textarea></code><code data-lang=\\"js\\"><div class=\\"line\\">js</div><textarea data-torchlight-original=\\"true\\" style=\\"display: none !important;\\">js</textarea></code></pre>
 "

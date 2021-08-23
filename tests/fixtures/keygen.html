@@ -1,0 +1,13 @@
+<pre data-lang="csharp"><code>using RestSharp;
+using System;
+using System.Text;
+
+var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes("{EMAIL}:{PASSWORD}"));
+
+var client = new RestClient("https://api.keygen.sh/v1/accounts/{ACCOUNT}");
+var request = new RestRequest("tokens", Method.POST);
+
+request.AddHeader("Accept", "application/vnd.api+json");
+request.AddHeader("Authorization", $"Basic {credentials}");
+
+var response = client.Execute(request);</code></pre>

@@ -22,7 +22,7 @@ module.exports = function (torchlight, options) {
 ***************************************
 *   Torchlight is watching files...   *
 ***************************************
-        `)
+`)
   }
 
   const input = path.resolve(options.input)
@@ -142,7 +142,7 @@ function highlight (torchlight, source) {
       }
 
       Object.keys(swap).forEach(key => {
-        highlighted = highlighted.replace(key, swap[key])
+        highlighted = highlighted.replace(key, () => swap[key])
       })
     })
 
