@@ -1,6 +1,6 @@
 {
     "name": "@torchlight-api/torchlight-cli",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "A CLI for Torchlight - the syntax highlighting API",
     "main": "index.js",
     "scripts": {
