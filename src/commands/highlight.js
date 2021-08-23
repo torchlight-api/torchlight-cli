@@ -4,7 +4,8 @@ const torchlight = require('../torchlight');
 const Block = require('../block');
 const cheerio = require('cheerio').default;
 const chokidar = require('chokidar');
-const log = require('../support/log')
+const log = require('../support/log');
+const {bus, FILE_WATCHING_COMPLETE} = require('../support/bus');
 
 module.exports = function (torchlight, options) {
     options = {
@@ -57,7 +58,7 @@ module.exports = function (torchlight, options) {
 
     watcher.on('ready', function () {
         if (!options.watch) {
-            watcher.close();
+            watcher.close().then(() => bus.emit(FILE_WATCHING_COMPLETE));
         }
     })
 }
@@ -78,13 +79,41 @@ function highlight(torchlight, source) {
     // Search for blocks that have not already been processed.
     $('pre:not([data-torchlight-processed])').each((index, pre) => {
         let $pre = $(pre);
-        let $code = $pre.children('code');
 
-        let block = new Block({
-            // Using `text()` will re-encode entities like &lgt;
-            code: $pre.text(),
-            language: decipherLanguage($pre)
-        });
+        $pre.children('code').each((index, code) => {
+            let $code = $(code);
+
+            let block = new Block({
+                // Using `text()` will re-encode entities like &lgt;
+                code: $code.text(),
+                language: decipherLanguage($pre, $code)
+            })
+
+            // Add our class placeholder as a class, so that we don't overwrite
+            // any classes that are already there.
+            $pre.addClass(block.placeholder('class'));
+
+            // Add a fake style that we can replace later.
+            $pre.css(block.placeholder('style'), '0');
+
+            // Store the raw code as the developer wrote it, so we can re-highlight
+            // it later if we need to, or allow it to be copied to clipboard.
+            let raw = `<textarea data-torchlight-original='true' style='display: none !important;'>${$code.html()}</textarea>`;
+
+            // Add the placeholder inside the code tag.
+            $code.html(block.placeholder('highlighted') + raw);
+
+            // Give the developer an opportunity to add things to the placeholder
+            // element. Like copy to clipboard buttons, language indicators, etc.
+            if (torchlight.config('modifyPlaceholderElement')) {
+                torchlight.config('modifyPlaceholderElement')($, $pre, $code, block);
+            }
+
+            blocks.push(block);
+        })
+
+        // Add the options hash that this block will be highlighted with.
+        $pre.attr('data-torchlight-processed', torchlight.configHash());
 
         // Cut out the *exact* pre element as it is in the file. Cheerio converts
         // single quotes to double, normalizes whitespace, and otherwise "cleans
@@ -96,33 +125,8 @@ function highlight(torchlight, source) {
             pre.sourceCodeLocation.endOffset
         );
 
-        // Add our class placeholder as a class, so that we don't overwrite
-        // any classes that are already there.
-        $pre.addClass(block.placeholder('class'));
-
-        // Add the options hash that this block will be highlighted with.
-        $pre.attr('data-torchlight-processed', torchlight.configHash());
-
-        // Add a fake style that we can replace later.
-        $pre.css(block.placeholder('style'), '0')
-
-        // Store the raw code as the developer wrote it, so we can re-highlight
-        // it later if we need to, or allow it to be copied to clipboard.
-        let raw = `<textarea data-torchlight-original='true' style='display: none !important;'>${$code.html()}</textarea>`;
-
-        // Add the placeholder inside the code tag.
-        $code.html(block.placeholder('highlighted') + raw);
-
-        // Give the developer an opportunity to add things to the placeholder
-        // element. Like copy to clipboard buttons, language indicators, etc.
-        if (torchlight.config('modifyPlaceholderElement')) {
-            torchlight.config('modifyPlaceholderElement')($, $pre, $code, block);
-        }
-
-        // Swap out the original tag with the outerHTML of our built up tag.
+        // Swap out the original tag with the outerHTML of our modified tag.
         highlighted = highlighted.replace(pristinePreElement, $.html($pre));
-
-        blocks.push(block);
     });
 
     if (!blocks.length) {
@@ -134,7 +138,8 @@ function highlight(torchlight, source) {
             let swap = {
                 [block.placeholder('class')]: block.classes ?? '',
                 [block.placeholder('style') + ': 0;']: block.styles ?? '',
-                [block.placeholder('highlighted')]: block.highlighted
+                [block.placeholder('highlighted')]: block.highlighted,
+                [block.placeholder('highlighted')]: block.highlighted,
             }
 
             Object.keys(swap).forEach(key => {
@@ -144,7 +149,6 @@ function highlight(torchlight, source) {
 
         return highlighted;
     })
-
 }
 
 /**
@@ -153,7 +157,7 @@ function highlight(torchlight, source) {
  * @param $pre
  * @return {string}
  */
-function decipherLanguage($pre) {
+function decipherLanguage($pre, $code) {
     let custom = torchlight.config('highlight.decipherLanguageFromElement')
 
     // Let the developer add their own deciphering mechanism.
@@ -167,7 +171,7 @@ function decipherLanguage($pre) {
 
     let langs = [
         // Look first at the code element.
-        ...decipherFromElement($pre.children('code')),
+        ...decipherFromElement($code),
         // And then the pre element.
         ...decipherFromElement($pre),
     ]

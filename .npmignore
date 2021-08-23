@@ -2,3 +2,4 @@ torchlight.config.js
 source
 built
 .idea
+tests/tmp

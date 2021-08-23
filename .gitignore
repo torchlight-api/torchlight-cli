@@ -3,3 +3,4 @@ source
 built
 .idea
 node_modules
+tests/tmp
