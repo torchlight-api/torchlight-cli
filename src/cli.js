@@ -1,5 +1,5 @@
-const {program} = require('commander')
-const torchlight = require('./torchlight');
+const { program } = require('commander')
+const torchlight = require('./torchlight')
 
 /**
  * Configure the commander CLI application.
@@ -7,67 +7,66 @@ const torchlight = require('./torchlight');
  * @param options
  * @return {Command}
  */
-function makeProgram(options = {}) {
-    if (options?.testing) {
-        // Don't exit when there are errors, so we
-        // can catch them.
-        program.exitOverride();
+function makeProgram (options = {}) {
+  if (options?.testing) {
+    // Don't exit when there are errors, so we
+    // can catch them.
+    program.exitOverride()
 
-        // Capture the output, so we can inspect it.
-        program.configureOutput({
-            writeOut: () => {
-                //
-            },
-            writeErr: () => {
-                //
-            },
-            ...options?.configureOutput || {}
-        });
-    }
-
-    // Bootstrap the Torchlight singleton before every command.
-    program.hook('preAction', thisCommand => {
-        torchlight.init(thisCommand.opts().config)
+    // Capture the output, so we can inspect it.
+    program.configureOutput({
+      writeOut: () => {
+        //
+      },
+      writeErr: () => {
+        //
+      },
+      ...options?.configureOutput || {}
     })
+  }
 
-    makeCommand('_default_')
-        .description('Highlight code blocks in source files')
-        .option(
-            '-i, --input <directory>',
-            'Input directory. Defaults to current directory.'
-        )
-        .option(
-            '-o, --output <directory>',
-            'Output directory. Defaults to current directory.'
-        )
-        .option(
-            '-n, --include <patterns>',
-            'Glob patterns used to search for source files. Separate '
-            + 'multiple patterns with commas. Defaults to "**/*.htm,**/*.html".'
-        )
-        .option(
-            '-x, --exclude <patterns>',
-            'String patterns to ignore (not globs). Separate multiple '
-            + 'patterns with commas. Defaults to "/node_modules/,/vendor/".'
-        )
-        .option(
-            '-w, --watch',
-            'Watch source files for changes.'
-        )
+  // Bootstrap the Torchlight singleton before every command.
+  program.hook('preAction', thisCommand => {
+    torchlight.init(thisCommand.opts().config)
+  })
 
-    makeCommand('init')
-        .description('Publish the Torchlight configuration file.')
-        .option(
-            '-p, --path <path>',
-            'Location for the configuration file.'
-        );
+  makeCommand('_default_')
+    .description('Highlight code blocks in source files')
+    .option(
+      '-i, --input <directory>',
+      'Input directory. Defaults to current directory.'
+    )
+    .option(
+      '-o, --output <directory>',
+      'Output directory. Defaults to current directory.'
+    )
+    .option(
+      '-n, --include <patterns>',
+      'Glob patterns used to search for source files. Separate ' +
+            'multiple patterns with commas. Defaults to "**/*.htm,**/*.html".'
+    )
+    .option(
+      '-x, --exclude <patterns>',
+      'String patterns to ignore (not globs). Separate multiple ' +
+            'patterns with commas. Defaults to "/node_modules/,/vendor/".'
+    )
+    .option(
+      '-w, --watch',
+      'Watch source files for changes.'
+    )
 
-    makeCommand('cache:clear')
-        .description('Clear the cache');
+  makeCommand('init')
+    .description('Publish the Torchlight configuration file.')
+    .option(
+      '-p, --path <path>',
+      'Location for the configuration file.'
+    )
 
-    return program;
+  makeCommand('cache:clear')
+    .description('Clear the cache')
+
+  return program
 }
-
 
 /**
  * Run the CLI for testing purposes
@@ -75,53 +74,52 @@ function makeProgram(options = {}) {
  * @param args
  * @param opts
  */
-function testCli(args, opts) {
-    // https://github.com/shadowspawn/forest-arborist/blob/master/src/command.ts#L345
-    return makeProgram({
-        ...opts,
-        testing: true
-    }).parse(args, {
-        from: 'user'
-    });
+function testCli (args, opts) {
+  // https://github.com/shadowspawn/forest-arborist/blob/master/src/command.ts#L345
+  return makeProgram({
+    ...opts,
+    testing: true
+  }).parse(args, {
+    from: 'user'
+  })
 }
 
 /**
  * @param name
  * @return {Command}
  */
-function makeCommand(name) {
-    let cmd = program;
-    let action = name;
+function makeCommand (name) {
+  let cmd = program
+  let action = name
 
-    if (name === '_default_') {
-        // The default command has a handler at
-        // highlight.js, and no command name.
-        action = 'highlight';
-    } else {
-        // Name the other commands.
-        cmd = cmd.command(name);
-    }
+  if (name === '_default_') {
+    // The default command has a handler at
+    // highlight.js, and no command name.
+    action = 'highlight'
+  } else {
+    // Name the other commands.
+    cmd = cmd.command(name)
+  }
 
-    // Namespaced command convention. E.g. The config:cache
-    // command has a handler at config/cache.js.
-    action = action.replace(':', '/');
+  // Namespaced command convention. E.g. The config:cache
+  // command has a handler at config/cache.js.
+  action = action.replace(':', '/')
 
-    let handler = require(`./commands/${action}`);
+  const handler = require(`./commands/${action}`)
 
-    // Add a little shim around the handler so we can pass the
-    // torchlight variable in, just for convenience.
-    cmd.action(function (options) {
-        return handler(torchlight, options);
-    })
+  // Add a little shim around the handler so we can pass the
+  // torchlight variable in, just for convenience.
+  cmd.action(function (options) {
+    return handler(torchlight, options)
+  })
 
-    // Every command gets the -c option, so the developer can
-    // specify a path to a config file.
-    return cmd.option(
-        '-c, --config <file>',
-        'Path to the Torchlight configuration file.'
-    )
+  // Every command gets the -c option, so the developer can
+  // specify a path to a config file.
+  return cmd.option(
+    '-c, --config <file>',
+    'Path to the Torchlight configuration file.'
+  )
 }
 
-
-exports.testCli = testCli;
-exports.makeProgram = makeProgram;
+exports.testCli = testCli
+exports.makeProgram = makeProgram

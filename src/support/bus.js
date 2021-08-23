@@ -1,9 +1,8 @@
-const EventEmitter = require('events').EventEmitter;
-
+const EventEmitter = require('events').EventEmitter
 
 module.exports = {
-    bus: new EventEmitter,
+  bus: new EventEmitter(),
 
-    // Event names
-    FILE_WATCHING_COMPLETE: 1,
+  // Event names
+  FILE_WATCHING_COMPLETE: 1
 }

@@ -1,25 +1,25 @@
-const md5 = require('md5');
-const path = require('path');
+const md5 = require('md5')
+const path = require('path')
 const {
-    readJsonSync,
-    writeJsonSync,
-    ensureDirSync,
-    pathExistsSync,
-    removeSync
+  readJsonSync,
+  writeJsonSync,
+  ensureDirSync,
+  pathExistsSync,
+  removeSync
 } = require('fs-extra')
 
 /**
  * @param options
  * @constructor
  */
-let File = function (options = {}) {
-    if (!options.directory) {
-        throw new Error('No cache directory specified.');
-    }
+const File = function (options = {}) {
+  if (!options.directory) {
+    throw new Error('No cache directory specified.')
+  }
 
-    this.directory = path.resolve(options.directory)
+  this.directory = path.resolve(options.directory)
 
-    ensureDirSync(this.directory);
+  ensureDirSync(this.directory)
 }
 
 /**
@@ -30,19 +30,19 @@ let File = function (options = {}) {
  * @return {*}
  */
 File.prototype.get = function (key, def) {
-    if (!pathExistsSync(this.filename(key))) {
-        return def;
-    }
+  if (!pathExistsSync(this.filename(key))) {
+    return def
+  }
 
-    let entry = readJsonSync(this.filename(key));
+  const entry = readJsonSync(this.filename(key))
 
-    if (Date.now() / 1000 > entry.expires) {
-        this.delete(key);
+  if (Date.now() / 1000 > entry.expires) {
+    this.delete(key)
 
-        return def;
-    }
+    return def
+  }
 
-    return entry.value;
+  return entry.value
 }
 
 /**
@@ -53,10 +53,10 @@ File.prototype.get = function (key, def) {
  * @param {number} ttlSeconds
  */
 File.prototype.set = function (key, value, ttlSeconds = 60 * 24 * 7) {
-    writeJsonSync(this.filename(key), {
-        expires: (Date.now() / 1000) + ttlSeconds,
-        value: value
-    });
+  writeJsonSync(this.filename(key), {
+    expires: (Date.now() / 1000) + ttlSeconds,
+    value: value
+  })
 }
 
 /**
@@ -65,14 +65,14 @@ File.prototype.set = function (key, value, ttlSeconds = 60 * 24 * 7) {
  * @param key
  */
 File.prototype.delete = function (key) {
-    removeSync(this.filename(key));
+  removeSync(this.filename(key))
 }
 
 /**
  * Clear the cache.
  */
 File.prototype.clear = function () {
-    removeSync(this.directory);
+  removeSync(this.directory)
 }
 
 /**
@@ -80,7 +80,7 @@ File.prototype.clear = function () {
  * @return {string}
  */
 File.prototype.filename = function (key) {
-    return path.join(this.directory, md5(key) + '.json');
+  return path.join(this.directory, md5(key) + '.json')
 }
 
-module.exports = File;
+module.exports = File

@@ -1,7 +1,7 @@
-let store = {};
+let store = {}
 
-let Memory = function () {
-    //
+const Memory = function () {
+  //
 }
 
 /**
@@ -12,19 +12,19 @@ let Memory = function () {
  * @return {*}
  */
 Memory.prototype.get = function (key, def) {
-    if (!store.hasOwnProperty(key)) {
-        return def;
-    }
+  if (!Object.prototype.hasOwnProperty.call(store, key)) {
+    return def
+  }
 
-    let entry = store[key];
+  const entry = store[key]
 
-    if (Date.now() / 1000 > entry.expires) {
-        this.delete(key);
+  if (Date.now() / 1000 > entry.expires) {
+    this.delete(key)
 
-        return def;
-    }
+    return def
+  }
 
-    return entry.value;
+  return entry.value
 }
 
 /**
@@ -35,10 +35,10 @@ Memory.prototype.get = function (key, def) {
  * @param {number} ttlSeconds
  */
 Memory.prototype.set = function (key, value, ttlSeconds = 60 * 24 * 7) {
-    store[key] = {
-        expires: (Date.now() / 1000) + ttlSeconds,
-        value: value
-    }
+  store[key] = {
+    expires: (Date.now() / 1000) + ttlSeconds,
+    value: value
+  }
 }
 
 /**
@@ -47,16 +47,14 @@ Memory.prototype.set = function (key, value, ttlSeconds = 60 * 24 * 7) {
  * @param key
  */
 Memory.prototype.delete = function (key) {
-    delete store[key];
+  delete store[key]
 }
 
 /**
  * Clear the cache.
  */
 Memory.prototype.clear = function () {
-    store = {};
+  store = {}
 }
 
-
-module.exports = Memory;
-
+module.exports = Memory
