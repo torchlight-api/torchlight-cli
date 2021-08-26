@@ -1,6 +1,6 @@
-const torchlight = require('../src/torchlight')
-const { mockApi, fixture } = require('./support/helpers')
-const log = require('../src/support/log')
+import torchlight from '../src/torchlight';
+import {mockApi, fixture} from './support/helpers';
+import log from '../src/support/log';
 
 process.env.TORCHLIGHT_TOKEN = 'test'
 

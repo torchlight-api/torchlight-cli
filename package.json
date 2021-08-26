@@ -1,24 +1,20 @@
 {
     "name": "@torchlight-api/torchlight-cli",
-    "version": "0.0.8",
+    "version": "0.1.0",
     "description": "A CLI for Torchlight - the syntax highlighting API",
     "main": "index.js",
     "scripts": {
-        "test": "standard --env jest && jest"
+        "test": "standard --env jest && jest",
+        "build": "babel src --out-dir lib --copy-files \"--ignore\" \"src/stubs/**/*\""
     },
     "bin": {
-        "torchlight": "index.js"
+        "torchlight": "lib/bin/torchlight.js"
     },
     "keywords": [
         "syntax",
         "highlighting",
         "torchlight"
     ],
-    "standard": {
-        "ignore": [
-            "tests"
-        ]
-    },
     "author": "Aaron Francis <aaron@hammerstone.dev> (https://torchlight.dev)",
     "license": "MIT",
     "dependencies": {
@@ -34,7 +30,36 @@
         "md5": "^2.3.0"
     },
     "devDependencies": {
+        "@babel/preset-env": "^7.15.0",
+        "@babel/cli": "^7.14.8",
+        "@babel/core": "^7.15.0",
+        "@babel/node": "^7.12.13",
+        "babel-jest": "^27.0.6",
         "jest": "^27.0.6",
         "standard": "^16.0.3"
+    },
+    "standard": {
+        "ignore": [
+            "tests",
+            "lib"
+        ]
+    },
+    "jest": {
+        "clearMocks": true,
+        "transform": {
+            "^.+\\.[t|j]sx?$": "babel-jest"
+        }
+    },
+    "babel": {
+        "presets": [
+            [
+                "@babel/preset-env",
+                {
+                    "targets": {
+                        "node": "12.13.0"
+                    }
+                }
+            ]
+        ]
     }
 }

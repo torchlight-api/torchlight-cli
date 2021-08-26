@@ -1,18 +1,18 @@
-const { writeFileSync, existsSync, readFileSync, ensureFileSync } = require('fs-extra')
-const path = require('path')
-const inquirer = require('inquirer')
-const log = require('../support/log')
+import fs from 'fs-extra'
+import path from 'path'
+import inquirer from 'inquirer'
+import log from '../support/log'
 
 function write (location) {
   const source = path.resolve(path.join(__dirname, '../stubs/config.js'))
-  const stub = readFileSync(source, 'utf-8')
+  const stub = fs.readFileSync(source, 'utf-8')
 
-  ensureFileSync(location)
-  writeFileSync(location, stub)
+  fs.ensureFileSync(location)
+  fs.writeFileSync(location, stub)
   log.info('File written to %s', location)
 }
 
-module.exports = function (torchlight, options) {
+export default function (torchlight, options) {
   options = {
     path: 'torchlight.config.js',
     ...options
@@ -20,7 +20,7 @@ module.exports = function (torchlight, options) {
 
   const location = path.resolve(options.path)
 
-  if (!existsSync(location)) {
+  if (!fs.existsSync(location)) {
     return write(location)
   }
 

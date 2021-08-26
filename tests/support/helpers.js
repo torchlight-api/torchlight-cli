@@ -1,7 +1,7 @@
-const { bus, FILE_WATCHING_COMPLETE } = require('../../src/support/bus')
-const { testCli } = require('../../src/cli')
-const { readFileSync } = require('fs-extra')
-const torchlight = require('../../src/torchlight')
+import { bus, FILE_WATCHING_COMPLETE } from '../../src/support/bus'
+import { testCli } from '../../src/cli'
+import { readFileSync } from 'fs-extra'
+import torchlight from '../../src/torchlight'
 
 function fixture (file, callback, options = {}) {
   options = {

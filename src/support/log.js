@@ -1,4 +1,4 @@
-const chalk = require('chalk')
+import chalk from 'chalk'
 let silent = false
 
 function log (fn, args) {
@@ -9,14 +9,20 @@ function log (fn, args) {
   }
 }
 
-exports.error = function error () {
+function error () {
   log(chalk.bold.bgRed, arguments)
 }
 
-exports.info = function error () {
+function info () {
   log(chalk.green, arguments)
 }
 
-exports.silence = function (silence = true) {
+function silence (silence = true) {
   silent = silence
+}
+
+export default {
+  error,
+  info,
+  silence
 }

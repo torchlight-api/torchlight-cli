@@ -1,14 +1,14 @@
-const axios = require('axios')
-const FileCache = require('./cache/file')
-const MemoryCache = require('./cache/memory')
-const { readJsonSync, pathExistsSync } = require('fs-extra')
-const path = require('path')
-const md5 = require('md5')
-const get = require('lodash.get')
-const chunk = require('lodash.chunk')
-const log = require('./support/log')
+import axios from 'axios'
+import FileCache from './cache/file'
+import fs from 'fs-extra'
+import MemoryCache from './cache/memory'
+import path from 'path'
+import md5 from 'md5'
+import get from 'lodash.get'
+import chunk from 'lodash.chunk'
+import log from './support/log'
 
-const VERSION = readJsonSync(path.resolve('package.json')).version
+const VERSION = fs.readJsonSync(path.resolve('package.json')).version
 
 /**
  * @constructor
@@ -68,7 +68,7 @@ Torchlight.prototype.normalizeConfiguration = function (config) {
 
   // Allow the developer to pass another path to us.
   if (typeof config === 'string') {
-    config = pathExistsSync(path.resolve(config)) ? require(path.resolve(config)) : {}
+    config = fs.pathExistsSync(path.resolve(config)) ? require(path.resolve(config)) : {}
   }
 
   if (process.env.TORCHLIGHT_TOKEN && !config.token) {
@@ -220,4 +220,4 @@ function htmlEntities (str) {
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
 
-module.exports = new Torchlight()
+export default new Torchlight()

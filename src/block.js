@@ -1,8 +1,8 @@
-const md5 = require('md5')
-const guid = require('./support/guid')
-const torchlight = require('./torchlight')
+import md5 from 'md5'
+import guid from './support/guid'
+import torchlight from './torchlight'
 
-const Block = function (opts = {}) {
+export default function Block (opts = {}) {
   opts = {
     id: guid(),
     theme: torchlight.config('theme', 'nord'),
@@ -21,11 +21,11 @@ const Block = function (opts = {}) {
 
 Block.prototype.hash = function () {
   return md5('' +
-        this.language +
-        this.theme +
-        this.code +
-        torchlight.config('bust', 0) +
-        JSON.stringify(torchlight.config('options'))
+    this.language +
+    this.theme +
+    this.code +
+    torchlight.config('bust', 0) +
+    JSON.stringify(torchlight.config('options'))
   )
 }
 
@@ -74,5 +74,3 @@ Block.prototype.toRequestParams = function () {
     code: this.code
   }
 }
-
-module.exports = Block

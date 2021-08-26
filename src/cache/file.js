@@ -1,25 +1,19 @@
-const md5 = require('md5')
-const path = require('path')
-const {
-  readJsonSync,
-  writeJsonSync,
-  ensureDirSync,
-  pathExistsSync,
-  removeSync
-} = require('fs-extra')
+import md5 from 'md5'
+import path from 'path'
+import fs from 'fs-extra'
 
 /**
  * @param options
  * @constructor
  */
-const File = function (options = {}) {
+export default function File (options = {}) {
   if (!options.directory) {
     throw new Error('No cache directory specified.')
   }
 
   this.directory = path.resolve(options.directory)
 
-  ensureDirSync(this.directory)
+  fs.ensureDirSync(this.directory)
 }
 
 /**
@@ -30,11 +24,11 @@ const File = function (options = {}) {
  * @return {*}
  */
 File.prototype.get = function (key, def) {
-  if (!pathExistsSync(this.filename(key))) {
+  if (!fs.pathExistsSync(this.filename(key))) {
     return def
   }
 
-  const entry = readJsonSync(this.filename(key))
+  const entry = fs.readJsonSync(this.filename(key))
 
   if (Date.now() / 1000 > entry.expires) {
     this.delete(key)
@@ -53,7 +47,7 @@ File.prototype.get = function (key, def) {
  * @param {number} ttlSeconds
  */
 File.prototype.set = function (key, value, ttlSeconds = 60 * 24 * 7) {
-  writeJsonSync(this.filename(key), {
+  fs.writeJsonSync(this.filename(key), {
     expires: (Date.now() / 1000) + ttlSeconds,
     value: value
   })
@@ -65,14 +59,14 @@ File.prototype.set = function (key, value, ttlSeconds = 60 * 24 * 7) {
  * @param key
  */
 File.prototype.delete = function (key) {
-  removeSync(this.filename(key))
+  fs.removeSync(this.filename(key))
 }
 
 /**
  * Clear the cache.
  */
 File.prototype.clear = function () {
-  removeSync(this.directory)
+  fs.removeSync(this.directory)
 }
 
 /**
@@ -82,5 +76,3 @@ File.prototype.clear = function () {
 File.prototype.filename = function (key) {
   return path.join(this.directory, md5(key) + '.json')
 }
-
-module.exports = File

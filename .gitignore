@@ -1,6 +1,5 @@
 torchlight.config.js
-source
-built
+lib
 .idea
 node_modules
 tests/tmp

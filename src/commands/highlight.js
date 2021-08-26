@@ -1,13 +1,13 @@
-const { readFileSync, writeFileSync, ensureFileSync } = require('fs-extra')
-const path = require('path')
-const torchlight = require('../torchlight')
-const Block = require('../block')
-const cheerio = require('cheerio').default
-const chokidar = require('chokidar')
-const log = require('../support/log')
-const { bus, FILE_WATCHING_COMPLETE } = require('../support/bus')
+import path from 'path'
+import torchlight from '../torchlight'
+import Block from '../block'
+import cheerio from 'cheerio'
+import chokidar from 'chokidar'
+import log from '../support/log'
+import fs from 'fs-extra'
+import { bus, FILE_WATCHING_COMPLETE } from '../support/bus'
 
-module.exports = function (torchlight, options) {
+export default function (torchlight, options) {
   options = {
     input: torchlight.config('highlight.input', ''),
     output: torchlight.config('highlight.output', ''),
@@ -41,18 +41,18 @@ module.exports = function (torchlight, options) {
 
     log.info('Highlighting %s', file)
 
-    const source = readFileSync(path.join(input, file), 'utf-8')
+    const source = fs.readFileSync(path.join(input, file), 'utf-8')
 
     highlight(torchlight, source).then(highlighted => {
       const destination = path.join(output, file)
 
-      ensureFileSync(destination)
-      if (highlighted === readFileSync(destination, 'utf-8')) {
+      fs.ensureFileSync(destination)
+      if (highlighted === fs.readFileSync(destination, 'utf-8')) {
         return
       }
 
       log.info('Writing to %s', destination)
-      writeFileSync(destination, highlighted, 'utf-8')
+      fs.writeFileSync(destination, highlighted, 'utf-8')
     })
   })
 
@@ -191,7 +191,7 @@ function decipherFromElement ($el) {
 
   const classes = ($el.attr('class') || '')
     .split(' ')
-  // These classes are commonly used to denote code languages.
+    // These classes are commonly used to denote code languages.
     .filter(c => c.startsWith('language-') || c.startsWith('lang-'))
     .map(c => c.replace('language-', '').replace('lang-', ''))
 

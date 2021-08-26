@@ -1,6 +1,6 @@
 let store = {}
 
-const Memory = function () {
+export default function Memory () {
   //
 }
 
@@ -56,5 +56,3 @@ Memory.prototype.delete = function (key) {
 Memory.prototype.clear = function () {
   store = {}
 }
-
-module.exports = Memory

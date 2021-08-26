@@ -1,4 +1,7 @@
-#! /usr/bin/env node
-const { makeProgram } = require('./src/cli')
+import torchlight from './src/torchlight'
+import Block from './src/block'
 
-makeProgram().parse()
+export {
+  torchlight,
+  Block
+}

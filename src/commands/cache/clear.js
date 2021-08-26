@@ -1,3 +1,3 @@
-module.exports = function (torchlight, options) {
+export default function (torchlight, options) {
   torchlight.cache.clear()
 }

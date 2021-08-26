@@ -1,5 +1,8 @@
-const { program } = require('commander')
-const torchlight = require('./torchlight')
+import { program } from 'commander'
+import torchlight from './torchlight'
+import highlight from './commands/highlight'
+import init from './commands/init'
+import cacheClear from './commands/cache/clear'
 
 /**
  * Configure the commander CLI application.
@@ -7,7 +10,7 @@ const torchlight = require('./torchlight')
  * @param options
  * @return {Command}
  */
-function makeProgram (options = {}) {
+export function makeProgram (options = {}) {
   if (options?.testing) {
     // Don't exit when there are errors, so we
     // can catch them.
@@ -30,7 +33,7 @@ function makeProgram (options = {}) {
     torchlight.init(thisCommand.opts().config)
   })
 
-  makeCommand('_default_')
+  makeCommand('_default_', highlight)
     .description('Highlight code blocks in source files')
     .option(
       '-i, --input <directory>',
@@ -43,26 +46,26 @@ function makeProgram (options = {}) {
     .option(
       '-n, --include <patterns>',
       'Glob patterns used to search for source files. Separate ' +
-            'multiple patterns with commas. Defaults to "**/*.htm,**/*.html".'
+      'multiple patterns with commas. Defaults to "**/*.htm,**/*.html".'
     )
     .option(
       '-x, --exclude <patterns>',
       'String patterns to ignore (not globs). Separate multiple ' +
-            'patterns with commas. Defaults to "/node_modules/,/vendor/".'
+      'patterns with commas. Defaults to "/node_modules/,/vendor/".'
     )
     .option(
       '-w, --watch',
       'Watch source files for changes.'
     )
 
-  makeCommand('init')
+  makeCommand('init', init)
     .description('Publish the Torchlight configuration file.')
     .option(
       '-p, --path <path>',
       'Location for the configuration file.'
     )
 
-  makeCommand('cache:clear')
+  makeCommand('cache:clear', cacheClear)
     .description('Clear the cache')
 
   return program
@@ -74,7 +77,7 @@ function makeProgram (options = {}) {
  * @param args
  * @param opts
  */
-function testCli (args, opts) {
+export function testCli (args, opts) {
   // https://github.com/shadowspawn/forest-arborist/blob/master/src/command.ts#L345
   return makeProgram({
     ...opts,
@@ -88,24 +91,13 @@ function testCli (args, opts) {
  * @param name
  * @return {Command}
  */
-function makeCommand (name) {
+function makeCommand (name, handler) {
   let cmd = program
-  let action = name
 
-  if (name === '_default_') {
-    // The default command has a handler at
-    // highlight.js, and no command name.
-    action = 'highlight'
-  } else {
+  if (name !== '_default_') {
     // Name the other commands.
     cmd = cmd.command(name)
   }
-
-  // Namespaced command convention. E.g. The config:cache
-  // command has a handler at config/cache.js.
-  action = action.replace(':', '/')
-
-  const handler = require(`./commands/${action}`)
 
   // Add a little shim around the handler so we can pass the
   // torchlight variable in, just for convenience.
@@ -120,6 +112,3 @@ function makeCommand (name) {
     'Path to the Torchlight configuration file.'
   )
 }
-
-exports.testCli = testCli
-exports.makeProgram = makeProgram
