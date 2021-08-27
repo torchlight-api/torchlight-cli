@@ -1,14 +1,9 @@
 import axios from 'axios'
-import FileCache from './cache/file'
-import fs from 'fs-extra'
-import MemoryCache from './cache/memory'
-import path from 'path'
 import md5 from 'md5'
 import get from 'lodash.get'
 import chunk from 'lodash.chunk'
 import log from './support/log'
-
-const VERSION = fs.readJsonSync(path.resolve('package.json')).version
+import MemoryCache from './cache/memory'
 
 /**
  * @constructor
@@ -23,14 +18,20 @@ const Torchlight = function () {
  * @param config
  * @return {Torchlight}
  */
-Torchlight.prototype.init = function (config) {
+Torchlight.prototype.init = function (config, cache) {
   if (this.initialized) {
     return this
   }
 
+  config = config || {}
+
+  if (process?.env?.TORCHLIGHT_TOKEN && !config?.token) {
+    config.token = process.env.TORCHLIGHT_TOKEN
+  }
+
   this.initialized = true
-  this.configuration = this.normalizeConfiguration(config)
-  this.cache = this.makeCache()
+  this.configuration = config
+  this.cache = cache || new MemoryCache()
 
   return this
 }
@@ -53,48 +54,6 @@ Torchlight.prototype.config = function (key, def = undefined) {
  */
 Torchlight.prototype.configHash = function () {
   return md5(this.configuration)
-}
-
-/**
- * @param {string|object} config
- * @return {*}
- */
-Torchlight.prototype.normalizeConfiguration = function (config) {
-  // By convention, look in the root directory for
-  // a torchlight.config.js file.
-  if (config === undefined || config === '') {
-    config = 'torchlight.config.js'
-  }
-
-  // Allow the developer to pass another path to us.
-  if (typeof config === 'string') {
-    config = fs.pathExistsSync(path.resolve(config)) ? require(path.resolve(config)) : {}
-  }
-
-  if (process.env.TORCHLIGHT_TOKEN && !config.token) {
-    config.token = process.env.TORCHLIGHT_TOKEN
-  }
-
-  return config
-}
-
-/**
- * Make a cache to hold highlighted blocks.
- *
- * @return {Cache}
- */
-Torchlight.prototype.makeCache = function () {
-  const cache = this.config('cache', false)
-
-  // Make a file cache if we're given a directory.
-  if (cache && typeof cache === 'string') {
-    return new FileCache({
-      directory: cache
-    })
-  }
-
-  // Use the cache they have provided, or default to an in-memory cache.
-  return cache || new MemoryCache()
 }
 
 /**
@@ -172,7 +131,7 @@ Torchlight.prototype.request = function (blocks) {
   }, {
     headers: {
       Authorization: `Bearer ${token}`,
-      'X-Torchlight-Client': `Torchlight CLI ${VERSION}`
+      'X-Torchlight-Client': 'Torchlight CLI'
     }
   }).then(response => response.data.blocks)
 }

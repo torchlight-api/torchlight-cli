@@ -38,7 +38,7 @@ function fixture (file, callback, options = {}) {
     })
 
     torchlight.init()
-
+    
     if (options.clearCache) {
       torchlight.cache.clear()
     }

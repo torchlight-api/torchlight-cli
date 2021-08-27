@@ -3,6 +3,7 @@ import torchlight from './torchlight'
 import highlight from './commands/highlight'
 import init from './commands/init'
 import cacheClear from './commands/cache/clear'
+import { makeConfig, makeCache } from './config'
 
 /**
  * Configure the commander CLI application.
@@ -30,7 +31,10 @@ export function makeProgram (options = {}) {
 
   // Bootstrap the Torchlight singleton before every command.
   program.hook('preAction', thisCommand => {
-    torchlight.init(thisCommand.opts().config)
+    const config = makeConfig(thisCommand.opts().config)
+    const cache = makeCache(config)
+
+    torchlight.init(config, cache)
   })
 
   makeCommand('_default_', highlight)
