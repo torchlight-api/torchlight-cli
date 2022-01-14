@@ -3,7 +3,7 @@
     "version": "0.1.3",
     "description": "A CLI for Torchlight - the syntax highlighting API",
 	"type": "module",
-    "exports": "index.js",
+    "exports": "./index.js",
     "scripts": {
         "test": "standard --env jest && jest",
         "build": "babel src --out-dir lib --copy-files \"--ignore\" \"src/stubs/**/*\""
