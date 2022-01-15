@@ -1,9 +1,9 @@
 import { program } from 'commander'
-import torchlight from './torchlight'
-import highlight from './commands/highlight'
-import init from './commands/init'
-import cacheClear from './commands/cache/clear'
-import { makeConfig, makeCache } from './config'
+import torchlight from './torchlight.js'
+import highlight from './commands/highlight.js'
+import init from './commands/init.js'
+import cacheClear from './commands/cache/clear.js'
+import { makeConfig, makeCache } from './config.js'
 
 /**
  * Configure the commander CLI application.

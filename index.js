@@ -1,5 +1,5 @@
-import torchlight from './src/torchlight'
-import Block from './src/block'
+import torchlight from './src/torchlight.js'
+import Block from './src/block.js'
 
 export {
   torchlight,
