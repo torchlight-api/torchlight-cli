@@ -1,7 +1,7 @@
+import { bus, FILE_WATCHING_COMPLETE } from '../../src/support/bus'
+import { testCli } from '../../src/cli'
 import { readFileSync } from 'fs-extra'
-import { bus, FILE_WATCHING_COMPLETE } from '../../src/support/bus.js'
-import { testCli } from '../../src/cli.js'
-import torchlight from '../../src/torchlight.js'
+import torchlight from '../../src/torchlight'
 
 function fixture (file, callback, options = {}) {
   options = {

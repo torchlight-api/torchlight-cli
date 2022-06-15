@@ -1,6 +1,6 @@
 import md5 from 'md5'
-import guid from './support/guid.js'
-import torchlight from './torchlight.js'
+import guid from './support/guid'
+import torchlight from './torchlight'
 
 export default function Block (opts = {}) {
   opts = {

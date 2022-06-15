@@ -2,8 +2,8 @@ import axios from 'axios'
 import md5 from 'md5'
 import get from 'lodash.get'
 import chunk from 'lodash.chunk'
-import log from './support/log.js'
-import MemoryCache from './cache/memory.js'
+import log from './support/log'
+import MemoryCache from './cache/memory'
 
 /**
  * @constructor

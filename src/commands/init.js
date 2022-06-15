@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import path from 'path'
 import inquirer from 'inquirer'
-import log from '../support/log.js'
+import log from '../support/log'
 
 function write (location) {
   const source = path.resolve(path.join(__dirname, '../stubs/config.js'))

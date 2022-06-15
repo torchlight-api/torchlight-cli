@@ -1,11 +1,11 @@
 import path from 'path'
-import torchlight from '../torchlight.js'
-import Block from '../block.js'
+import torchlight from '../torchlight'
+import Block from '../block'
 import cheerio from 'cheerio'
 import chokidar from 'chokidar'
-import log from '../support/log.js'
+import log from '../support/log'
 import fs from 'fs-extra'
-import { bus, FILE_WATCHING_COMPLETE } from '../support/bus.js'
+import { bus, FILE_WATCHING_COMPLETE } from '../support/bus'
 
 export default function (torchlight, options) {
   options = {

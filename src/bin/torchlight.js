@@ -1,4 +1,4 @@
 #! /usr/bin/env node
-import { makeProgram } from '../cli.js'
+import { makeProgram } from '../cli'
 
 makeProgram().parse()
