@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import path from 'path'
-import FileCache from './cache/file'
-import MemoryCache from './cache/memory'
+import FileCache from './cache/file.js'
+import MemoryCache from './cache/memory.js'
 
 /**
  * @param {string|object} config

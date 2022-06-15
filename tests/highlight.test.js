@@ -1,6 +1,6 @@
-import torchlight from '../src/torchlight';
-import {mockApi, fixture} from './support/helpers';
-import log from '../src/support/log';
+import torchlight from '../src/torchlight.js';
+import {mockApi, fixture} from './support/helpers.js';
+import log from '../src/support/log.js';
 
 process.env.TORCHLIGHT_TOKEN = 'test'
 
