@@ -113,10 +113,6 @@ Torchlight.prototype.request = function (blocks) {
 
   const token = this.config('token')
 
-  if (!token) {
-    throw new Error('No Torchlight token configured!')
-  }
-
   // For huge sites, we need to send blocks in chunks so
   // that we don't send e.g. 500 blocks in one request.
   if (blocks.length > this.chunkSize) {

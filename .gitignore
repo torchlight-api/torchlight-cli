@@ -4,3 +4,4 @@ lib
 node_modules
 tests/tmp
 package-lock.json
+dist

@@ -9,7 +9,8 @@ fi
 
 set -x
 
-yarn run build
+rm -rf ./dist/
+npm run build
 node ./bin/prepublish.js --"$1"
 npm publish --access public
 node ./bin/postpublish.js --"$1"

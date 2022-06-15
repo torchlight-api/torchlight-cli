@@ -2,18 +2,24 @@ name: Publish to NPM
 on:
   release:
     types: [ created ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        # Setup .npmrc file to publish to npm
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
-          node-version: '12.x'
+          node-version: 14
           registry-url: 'https://registry.npmjs.org'
-      - run: npm install
-      - run: npm run build
-      - run: npm publish
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Inject version
+        run: echo "PACKAGE_VERSION=$(git describe --tags)" >> $GITHUB_ENV
+
+      - name: Publish to NPM
+        run: npm run release:prod
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
