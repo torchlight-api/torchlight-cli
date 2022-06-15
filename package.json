@@ -1,6 +1,6 @@
 {
     "name": "@torchlight-api/torchlight-cli",
-    "version": "0.1.4",
+    "version": "0.0.0",
     "description": "A CLI for Torchlight - the syntax highlighting API",
     "source": "./src/index.js",
     "module": "./dist/torchlight-cli.esm.js",
@@ -18,10 +18,6 @@
         "syntax",
         "highlighting",
         "torchlight"
-    ],
-    "files": [
-        "/dist/*",
-        "/src/**/*"
     ],
     "author": "Aaron Francis <aaron@hammerstone.dev> (https://torchlight.dev)",
     "license": "MIT",
