@@ -3,7 +3,7 @@ import md5 from 'md5'
 import get from 'lodash.get'
 import chunk from 'lodash.chunk'
 import log from './support/log.js'
-import MemoryCache from './cache/memory.js'
+import { makeConfig, makeCache } from './config.js';
 
 /**
  * @constructor
@@ -18,12 +18,12 @@ const Torchlight = function () {
  * @param config
  * @return {Torchlight}
  */
-Torchlight.prototype.init = function (config, cache) {
+Torchlight.prototype.init = function (config) {
   if (this.initialized) {
     return this
   }
 
-  config = config || {}
+  config = makeConfig(config);
 
   if (process?.env?.TORCHLIGHT_TOKEN && !config?.token) {
     config.token = process.env.TORCHLIGHT_TOKEN
@@ -31,7 +31,7 @@ Torchlight.prototype.init = function (config, cache) {
 
   this.initialized = true
   this.configuration = config
-  this.cache = cache || new MemoryCache()
+  this.cache = makeCache(config)
 
   return this
 }
